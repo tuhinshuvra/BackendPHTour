@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
@@ -11,35 +12,46 @@ import { setAuthCookie } from "../../utils/setCookie";
 import { JwtPayload } from "jsonwebtoken";
 import { createUserTokens } from "../../utils/userToken";
 import { envVars } from "../../config/env";
+import passport from "passport";
+import { error } from "console";
 
 const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const loginInfo = await AuthServices.credentialsLogin(req.body)
+    // const loginInfo = await AuthServices.credentialsLogin(req.body)
 
-    // res.cookie("accessToken", loginInfo.accessToken, {
-    //     httpOnly: true,
-    //     secure: false
-    // })
+    passport.authenticate("local", async (error: any, user: any, info: any) => {
 
-    // res.cookie("refreshToken", loginInfo.refreshToken, {
-    //     httpOnly: true,
-    //     secure: false
-    // })
+        if (error) {
+            return next(new AppError(401, error))
+        }
 
-    setAuthCookie(res, loginInfo)
+        if (!user) {
+            return next(new AppError(401, info.message))
+        }
 
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "User Successfully Login",
-        data: loginInfo
-    })
+        const userTokens = await createUserTokens(user)
+
+        const { password, ...rest } = user.toObject()
+
+        setAuthCookie(res, userTokens)
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "User Successfully Login",
+            data: {
+                accessToken: userTokens.accessToken,
+                refreshToken: userTokens.refreshToken,
+                user: rest
+            }
+        })
+    })(req, res, next)
 })
 
 const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-        throw new AppError(httpStatus.BAD_REQUEST, "No Access Token Retrived Successfully")
+        throw new AppError(httpStatus.BAD_REQUEST, "No Access Token Retrieved Successfully")
     }
 
     const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string)
