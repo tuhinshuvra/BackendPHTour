@@ -12,49 +12,42 @@ import {
 const router = express.Router();
 
 
-
 /* ------------------ Tour Type Route -------------------- */
 router.get("/tour-types", TourController.getAllTourTypes);
+router.get("/tour-types/:name", TourController.getSingleTourType)
 
 router.post("/create-tour-type",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     validateRequest(createTourTypeZodSchema),
-    TourController.createTourType
-);
+    TourController.createTourType);
 
 router.patch("/tour-types/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     validateRequest(createTourTypeZodSchema),
-    TourController.updateTourType
-);
+    TourController.updateTourType);
 
 router.delete("/tour-types/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    TourController.deleteTourType
-);
+    TourController.deleteTourType);
 
 
 
 /* --------------------- Tour Routes ---------------------- */
-router.get("/",
-    TourController.getAllTours
-);
+router.get("/", TourController.getAllTours);
+router.get("/:slug", TourController.getSingleTour)
 
 router.post("/create",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     validateRequest(createTourZodSchema),
-    TourController.createTour
-);
+    TourController.createTour);
 
 router.patch("/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     validateRequest(updateTourZodSchema),
-    TourController.updateTour
-);
+    TourController.updateTour);
 
 router.delete("/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    TourController.deleteTour
-);
+    TourController.deleteTour);
 
 export const TourRoutes = router

@@ -30,7 +30,7 @@ const getSingleDivision = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: "Divisions retrieved",
+        message: "Division retrieved",
         data: result.data,
     });
 });

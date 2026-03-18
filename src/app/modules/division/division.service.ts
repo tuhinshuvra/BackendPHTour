@@ -8,9 +8,10 @@ const createDivision = async (payload: IDivision) => {
         throw new Error("A division with this name already exists.");
     }
 
-
     // const baseSlug = payload.name.toLowerCase().split(" ").join("-")
     // let slug = `${baseSlug}-division`
+
+    // // console.log("CreateDivision Slug : ", slug); 
 
     // let counter = 0;
     // while (await Division.exists({ slug })) {
@@ -34,13 +35,13 @@ const getAllDivisions = async () => {
         }
     }
 };
+
 const getSingleDivision = async (slug: string) => {
     const division = await Division.findOne({ slug });
     return {
         data: division,
     }
 };
-
 
 
 const updateDivision = async (id: string, payload: Partial<IDivision>) => {
