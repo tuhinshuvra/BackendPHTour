@@ -2,9 +2,12 @@
 import { TGenericErrorResponse } from "../interfaces/error.types";
 
 export const handleDuplicateError = (error: any): TGenericErrorResponse => {
-    const matchedArray = error.message.match(/"([^"]*)"/);
+    const matchedArray = error?.message?.match(/"([^"]*)"/);
+
+    const value = matchedArray?.[1] || "Duplicate value";
+
     return {
         statusCode: 400,
-        message: `${matchedArray[1]} already exists!!`
+        message: `${value} already exists!!`
     }
 }
