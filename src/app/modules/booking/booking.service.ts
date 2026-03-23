@@ -11,10 +11,8 @@ import { Payment } from "../payments/payment.model";
 import { PAYMENT_STATUS } from "../payments/payment.interface";
 import { SSLService } from "../sslCommerz/sslCommerz.service";
 import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface";
+import { getTransactionId } from "../../utils/getTransactionId";
 
-const getTransactionId = () => {
-    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-}
 
 /**
  * Duplicate DB Collections / replica

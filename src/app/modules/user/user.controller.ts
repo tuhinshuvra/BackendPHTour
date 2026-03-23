@@ -26,6 +26,23 @@ const createUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     })
 })
 
+const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload
+    const user = await UserServices.getMe(decodedToken.userId);
+
+    // res.status(httpStatus.CREATED).json({
+    //     message: "User Created Successfully",
+    //     user
+    // })
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: "Your Profile Retrieved Successfully",
+        data: user
+    })
+})
+
 const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     // const token = req.headers.authorization;
@@ -62,7 +79,6 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFun
         statusCode: httpStatus.OK,
         message: "All Users Retrieved Successfully",
         data: result.data,
-        meta: result.meta
     })
 
 })
@@ -80,6 +96,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFun
 
 export const UserControllers = {
     createUser,
+    getMe,
     updateUser,
     getAllUsers,
 }
