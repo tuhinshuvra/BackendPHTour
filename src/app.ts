@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import { router } from "./app/routes";
@@ -8,6 +7,7 @@ import cookieParser from "cookie-parser";
 import expressionSession from "express-session"
 import passport from "passport";
 import "./app/config/passport";
+import { envVars } from "./app/config/env";
 
 
 const app = express()
@@ -22,7 +22,10 @@ app.use(express.urlencoded({ extended: true }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true,
+}))
 
 app.use("/api/v1", router)
 

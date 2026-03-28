@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { Query } from "mongoose";
-import { excludeField } from "../../constants";
 import { QueryBuilder } from "../../utils/QueryBuilders";
 import { tourSearchableFields } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";

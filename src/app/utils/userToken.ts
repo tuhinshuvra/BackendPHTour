@@ -1,6 +1,6 @@
 import { JwtPayload } from "jsonwebtoken"
 import { envVars } from "../config/env"
-import { IsActive, IUser } from "../modules/user/user.interface"
+import { IUser } from "../modules/user/user.interface"
 import { User } from "../modules/user/user.model"
 import { generateToken, verifyToken } from "./jwt"
 import AppError from "../errorHelpers/AppError"

@@ -1,4 +1,6 @@
 import { deleteImageFromCLoudinary } from "../../config/cloudinary.config";
+import { QueryBuilder } from "../../utils/QueryBuilders";
+import { divisionSearchableFields } from "./division.constants";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
@@ -12,8 +14,6 @@ const createDivision = async (payload: IDivision) => {
     // const baseSlug = payload.name.toLowerCase().split(" ").join("-")
     // let slug = `${baseSlug}-division`
 
-    // // console.log("CreateDivision Slug : ", slug); 
-
     // let counter = 0;
     // while (await Division.exists({ slug })) {
     //     slug = `${slug}-${counter++}` // dhaka-division-2
@@ -26,15 +26,22 @@ const createDivision = async (payload: IDivision) => {
     return division
 };
 
-const getAllDivisions = async () => {
-    const divisions = await Division.find({});
-    const totalDivisions = await Division.countDocuments();
-    return {
-        data: divisions,
-        meta: {
-            total: totalDivisions
-        }
-    }
+const getAllDivisions = async (query: Record<string, string>) => {
+
+    const queryBuilder = new QueryBuilder(Division.find(), query)
+    const divisionsData = queryBuilder
+        .search(divisionSearchableFields)
+        .filter()
+        .sort()
+        .fields()
+        .paginate()
+
+    const [data, meta] = await Promise.all([
+        divisionsData.build(),
+        queryBuilder.getMeta()
+    ])
+
+    return { data, meta }
 };
 
 const getSingleDivision = async (slug: string) => {
@@ -82,7 +89,6 @@ const updateDivision = async (id: string, payload: Partial<IDivision>) => {
     return updatedDivision
 
 };
-
 
 const deleteDivision = async (id: string) => {
     await Division.findByIdAndDelete(id);

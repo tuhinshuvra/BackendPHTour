@@ -4,7 +4,6 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { DivisionService } from "./division.service";
 import { IDivision } from "./division.interface";
-import { any } from "zod";
 
 const createDivision = catchAsync(async (req: Request, res: Response) => {
     const payload: IDivision = {
@@ -21,18 +20,19 @@ const createDivision = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllDivisions = catchAsync(async (req: Request, res: Response) => {
-    const result = await DivisionService.getAllDivisions();
+    const query = req.query;
+    const result = await DivisionService.getAllDivisions(query as Record<string, string>);
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: "Divisions retrieved",
+        message: "All division retrieved",
         data: result.data,
         meta: result.meta,
     });
 });
 
 const getSingleDivision = catchAsync(async (req: Request, res: Response) => {
-    const slug = req.params.slug
+    const slug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
     const result = await DivisionService.getSingleDivision(slug);
     sendResponse(res, {
         statusCode: 200,
@@ -43,7 +43,7 @@ const getSingleDivision = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateDivision = catchAsync(async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const payload: IDivision = {
         ...req.body,
         thumbnail: req.file?.path
@@ -58,7 +58,8 @@ const updateDivision = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteDivision = catchAsync(async (req: Request, res: Response) => {
-    const result = await DivisionService.deleteDivision(req.params.id);
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const result = await DivisionService.deleteDivision(id);
     sendResponse(res, {
         statusCode: 200,
         success: true,
